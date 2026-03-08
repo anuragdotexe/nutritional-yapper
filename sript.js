@@ -18,17 +18,31 @@ imageInput.addEventListener('change', async (e) => {
 });
 
 function analyzeText(rawText) {
-    const text = rawText.toLowerCase();
-    console.log("Scanned Text:", text); // Debugging
+    // Clean the text: remove newlines and extra spaces
+    const cleanText = rawText.toLowerCase().replace(/\s+/g, ' ');
+    
+    // DEBUG: This will show you exactly what the OCR read on your phone
+    // alert("OCR Saw: " + cleanText.substring(0, 100) + "..."); 
 
-    // Logic: Look for the number immediately after the keyword
-    const sugarMatch = text.match(/sugars?\s*(\d+(\.\d+)?)/);
-    const fatMatch = text.match(/saturates?\s*(\d+(\.\d+)?)/);
+    // Improved Regex: Looks for 'sugar' or 'saturates', ignores symbols, 
+    // and grabs the first number it finds after the word.
+    const sugarRegex = /(?:sugars?|of which sugars?)[^\d]*(\d+(?:[\.,]\d+)?)/;
+    const fatRegex = /(?:saturates?|saturated fat)[^\d]*(\d+(?:[\.,]\d+)?)/;
 
-    const sugar = sugarMatch ? parseFloat(sugarMatch[1]) : 0;
-    const fat = fatMatch ? parseFloat(fatMatch[1]) : 0;
+    const sugarMatch = cleanText.match(sugarRegex);
+    const fatMatch = cleanText.match(fatRegex);
 
-    displayResults(sugar, fat);
+    // Convert "1,6" to "1.6" if the OCR uses commas
+    const sugar = sugarMatch ? parseFloat(sugarMatch[1].replace(',', '.')) : 0;
+    const fat = fatMatch ? parseFloat(fatMatch[1].replace(',', '.')) : 0;
+
+    // If we found 0 for everything, the OCR likely failed
+    if (sugar === 0 && fat === 0) {
+        statusMsg.innerHTML = "❌ Couldn't read clearly. Try a closer, flatter photo!";
+        statusMsg.classList.remove('hidden');
+    } else {
+        displayResults(sugar, fat);
+    }
 }
 
 function displayResults(sugar, fat) {
