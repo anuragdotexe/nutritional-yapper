@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NutriScan AI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>NutriScan</h1>
+            <p>Simple nutrition logic for humans.</p>
+        </header>
+
+        <main>
+            <div class="upload-area">
+                <label for="image-input" class="scan-btn">
+                    <span class="icon">📸</span> SCAN PRODUCT
+                </label>
+                <input type="file" id="image-input" accept="image/*" capture="environment">
+            </div>
+
+            <div id="status-message">Ready to analyze...</div>
+
+            <div id="result-card" class="hidden">
+                <div id="verdict-header">
+                    <span id="verdict-emoji">❓</span>
+                    <h2 id="verdict-text">ANALYZING</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <label>Sugar</label>
+                        <b id="val-sugar">0g</b>
+                    </div>
+                    <div class="stat-item">
+                        <label>Sat. Fat</label>
+                        <b id="val-fat">0g</b>
+                    </div>
+                </div>
+
+                <p id="summary-text"></p>
+                <button onclick="location.reload()" class="reset-btn">Scan Another</button>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
